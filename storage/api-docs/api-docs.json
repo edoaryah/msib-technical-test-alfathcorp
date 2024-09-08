@@ -1,0 +1,378 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Test MSIB IT Backend - Edo Arya Hermawan",
+        "description": "Membuat aplikasi dengan konsep REST-API pada sisi backend untuk memenuhi kebutuhan sistem perhitungan lembur (overtime)",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/employees": {
+            "post": {
+                "tags": [
+                    "Employees"
+                ],
+                "summary": "Create a new employee",
+                "operationId": "0a5e024e961bbf6f4670518f20c61134",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "Minimum 2 characters long and must be unique.",
+                                        "type": "string",
+                                        "minLength": 2,
+                                        "example": "John Doe"
+                                    },
+                                    "salary": {
+                                        "description": "Must be between 2 million and 10 million.",
+                                        "type": "integer",
+                                        "maximum": 10000000,
+                                        "minimum": 2000000,
+                                        "example": 5000000
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Employee created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "John Doe"
+                                        },
+                                        "salary": {
+                                            "type": "integer",
+                                            "example": 5000000
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "name": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The name field is required."
+                                                    }
+                                                },
+                                                "salary": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The salary must be at least 2000000."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/overtimes": {
+            "post": {
+                "tags": [
+                    "Overtimes"
+                ],
+                "summary": "Create a new overtime entry",
+                "operationId": "baa1eb529c0280e47e49d17e5bfaffca",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "employee_id": {
+                                        "description": "Must match the corresponding employees.id.",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "date": {
+                                        "description": "Cannot have the same date for the same employee_id.",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-08-15"
+                                    },
+                                    "time_started": {
+                                        "description": "Cannot be later than time_ended.",
+                                        "type": "string",
+                                        "format": "HH:mm",
+                                        "example": "08:00"
+                                    },
+                                    "time_ended": {
+                                        "description": "Cannot be earlier than time_started.",
+                                        "type": "string",
+                                        "format": "HH:mm",
+                                        "example": "17:00"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Overtime created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "employee_id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "date": {
+                                            "type": "string",
+                                            "format": "date",
+                                            "example": "2024-08-15"
+                                        },
+                                        "time_started": {
+                                            "type": "string",
+                                            "format": "HH:mm",
+                                            "example": "08:00"
+                                        },
+                                        "time_ended": {
+                                            "type": "string",
+                                            "format": "HH:mm",
+                                            "example": "17:00"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "employee_id": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The employee_id field is required."
+                                                    }
+                                                },
+                                                "date": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The date has already been taken."
+                                                    }
+                                                },
+                                                "time_started": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The time started must be before time ended."
+                                                    }
+                                                },
+                                                "time_ended": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The time ended must be after time started."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/overtime-pays/calculate": {
+            "get": {
+                "tags": [
+                    "Overtime Pay"
+                ],
+                "summary": "Calculate overtime pay",
+                "operationId": "9ab4e6a1ff633a3855424efc1aa94f6f",
+                "parameters": [
+                    {
+                        "name": "month",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "YYYY-MM"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Overtime pay calculated successfully"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/settings": {
+            "patch": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Update a setting",
+                "operationId": "ef98255c2eeea201efec9a82d04de733",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "key": {
+                                        "description": "Can only be filled with 'overtime_method'.",
+                                        "type": "string",
+                                        "example": "overtime_method"
+                                    },
+                                    "value": {
+                                        "description": "Can only be filled with the ID from references table where the code starts with 'overtime_method'.",
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Setting updated successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Setting updated successfully."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "key": {
+                                                    "type": "string",
+                                                    "example": "overtime_method"
+                                                },
+                                                "value": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "key": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The key field is required."
+                                                    }
+                                                },
+                                                "value": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The value field is required."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Employees",
+            "description": "Employees"
+        },
+        {
+            "name": "Overtimes",
+            "description": "Overtimes"
+        },
+        {
+            "name": "Overtime Pay",
+            "description": "Overtime Pay"
+        },
+        {
+            "name": "Settings",
+            "description": "Settings"
+        }
+    ]
+}
